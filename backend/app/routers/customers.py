@@ -16,10 +16,11 @@ router = APIRouter(prefix="/api/customers", tags=["Customers"])
 def register_customer(
     customer_data: CustomerCreate,
     db: Session = Depends(get_db),
-    current_staff: Staff = Depends(get_receptionist_or_higher),
-    sms_service: SMSService = Depends(get_sms_service)
+    current_staff: Staff = Depends(get_receptionist_or_higher)
 ):
     """Register a new customer (receptionist or higher)"""
+    
+    sms_service = get_sms_service(db)
     
     # Validate phone number
     formatted_phone = validate_phone_number(customer_data.phone)

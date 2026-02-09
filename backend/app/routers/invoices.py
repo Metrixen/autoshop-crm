@@ -142,10 +142,11 @@ def update_invoice(
     invoice_id: int,
     update_data: InvoiceUpdate,
     db: Session = Depends(get_db),
-    current_staff: Staff = Depends(get_receptionist_or_higher),
-    sms_service: SMSService = Depends(get_sms_service)
+    current_staff: Staff = Depends(get_receptionist_or_higher)
 ):
     """Update invoice (receptionist or higher)"""
+    
+    sms_service = get_sms_service(db)
     
     invoice = db.query(Invoice).filter(
         Invoice.id == invoice_id,
@@ -200,10 +201,11 @@ def update_invoice(
 def download_invoice_pdf(
     invoice_id: int,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user),
-    pdf_service: PDFService = Depends(get_pdf_service)
+    current_user = Depends(get_current_user)
 ):
     """Download invoice as PDF"""
+    
+    pdf_service = get_pdf_service()
     
     invoice = db.query(Invoice).filter(Invoice.id == invoice_id).first()
     

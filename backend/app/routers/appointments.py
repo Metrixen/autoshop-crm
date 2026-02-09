@@ -114,10 +114,11 @@ def update_appointment(
     appointment_id: int,
     update_data: AppointmentUpdate,
     db: Session = Depends(get_db),
-    current_staff: Staff = Depends(get_receptionist_or_higher),
-    sms_service: SMSService = Depends(get_sms_service)
+    current_staff: Staff = Depends(get_receptionist_or_higher)
 ):
     """Update appointment (confirm, reject, or mark as arrived)"""
+    
+    sms_service = get_sms_service(db)
     
     appointment = db.query(Appointment).filter(
         Appointment.id == appointment_id,

@@ -146,10 +146,11 @@ def update_work_order(
     work_order_id: int,
     update_data: WorkOrderUpdate,
     db: Session = Depends(get_db),
-    current_staff: Staff = Depends(get_current_staff),
-    mileage_service: MileageService = Depends(get_mileage_service)
+    current_staff: Staff = Depends(get_current_staff)
 ):
     """Update work order"""
+    
+    mileage_service = get_mileage_service(db)
     
     work_order = db.query(WorkOrder).filter(
         WorkOrder.id == work_order_id,
