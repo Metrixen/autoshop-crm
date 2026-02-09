@@ -11,7 +11,7 @@ from app.models import Shop, Staff, Customer, UserRole
 from app.utils.auth import get_password_hash
 
 # Test database URL (in-memory SQLite for isolation)
-TEST_DATABASE_URL = "sqlite:///./test_autoshop.db"
+TEST_DATABASE_URL = "sqlite:///:memory:"
 
 # Create test engine
 test_engine = create_engine(

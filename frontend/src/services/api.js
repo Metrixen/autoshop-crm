@@ -29,7 +29,7 @@ api.interceptors.response.use(
   async (error) => {
     // Only handle 401 errors on non-auth endpoints
     // Auth endpoints should handle their own errors through normal try/catch
-    const isAuthEndpoint = error.config?.url?.includes('/api/auth/');
+    const isAuthEndpoint = error.config?.url?.startsWith('/api/auth/');
     
     if (error.response?.status === 401 && !isAuthEndpoint) {
       localStorage.removeItem('access_token');
