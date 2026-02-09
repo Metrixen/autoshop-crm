@@ -24,7 +24,8 @@ app = FastAPI(
     version=settings.APP_VERSION,
     description="White-label CRM SaaS for auto repair shops",
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
+    redirect_slashes=False
 )
 
 # Configure CORS
