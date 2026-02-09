@@ -86,7 +86,7 @@ def create_invoice_from_work_order(
     return invoice
 
 
-@router.get("/", response_model=List[InvoiceSchema])
+@router.get("", response_model=List[InvoiceSchema])
 def list_invoices(
     skip: int = 0,
     limit: int = 100,

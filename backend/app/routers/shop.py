@@ -9,7 +9,7 @@ from app.utils.auth import get_current_staff, get_manager
 router = APIRouter(prefix="/api/shop", tags=["Shop"])
 
 
-@router.get("/", response_model=ShopSchema)
+@router.get("", response_model=ShopSchema)
 def get_shop_settings(
     db: Session = Depends(get_db),
     current_staff: Staff = Depends(get_current_staff)
@@ -24,7 +24,7 @@ def get_shop_settings(
     return shop
 
 
-@router.put("/", response_model=ShopSchema)
+@router.put("", response_model=ShopSchema)
 def update_shop_settings(
     update_data: ShopUpdate,
     db: Session = Depends(get_db),

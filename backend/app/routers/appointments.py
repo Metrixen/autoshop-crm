@@ -13,7 +13,7 @@ from app.config import settings
 router = APIRouter(prefix="/api/appointments", tags=["Appointments"])
 
 
-@router.post("/", response_model=AppointmentSchema, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=AppointmentSchema, status_code=status.HTTP_201_CREATED)
 def create_appointment(
     appointment_data: AppointmentCreate,
     db: Session = Depends(get_db),
@@ -43,7 +43,7 @@ def create_appointment(
     return appointment
 
 
-@router.get("/", response_model=List[AppointmentWithDetails])
+@router.get("", response_model=List[AppointmentWithDetails])
 def list_appointments(
     skip: int = 0,
     limit: int = 100,

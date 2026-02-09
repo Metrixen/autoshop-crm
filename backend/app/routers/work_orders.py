@@ -13,7 +13,7 @@ from app.services.mileage import get_mileage_service, MileageService
 router = APIRouter(prefix="/api/work-orders", tags=["Work Orders"])
 
 
-@router.post("/", response_model=WorkOrderSchema, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=WorkOrderSchema, status_code=status.HTTP_201_CREATED)
 def create_work_order(
     work_order_data: WorkOrderCreate,
     db: Session = Depends(get_db),
@@ -57,7 +57,7 @@ def create_work_order(
     return work_order
 
 
-@router.get("/", response_model=List[WorkOrderWithDetails])
+@router.get("", response_model=List[WorkOrderWithDetails])
 def list_work_orders(
     skip: int = 0,
     limit: int = 100,

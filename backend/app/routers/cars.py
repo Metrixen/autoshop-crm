@@ -10,7 +10,7 @@ from app.utils.auth import get_current_staff, get_receptionist_or_higher, get_cu
 router = APIRouter(prefix="/api/cars", tags=["Cars"])
 
 
-@router.post("/", response_model=CarSchema, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=CarSchema, status_code=status.HTTP_201_CREATED)
 def create_car(
     car_data: CarCreate,
     db: Session = Depends(get_db),
@@ -44,7 +44,7 @@ def create_car(
     return car
 
 
-@router.get("/", response_model=List[CarWithOwner])
+@router.get("", response_model=List[CarWithOwner])
 def list_cars(
     skip: int = 0,
     limit: int = 100,

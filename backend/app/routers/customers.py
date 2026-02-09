@@ -12,7 +12,7 @@ from app.config import settings
 router = APIRouter(prefix="/api/customers", tags=["Customers"])
 
 
-@router.post("/", response_model=CustomerSchema, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=CustomerSchema, status_code=status.HTTP_201_CREATED)
 def register_customer(
     customer_data: CustomerCreate,
     db: Session = Depends(get_db),
@@ -66,7 +66,7 @@ def register_customer(
     return customer
 
 
-@router.get("/", response_model=List[CustomerSchema])
+@router.get("", response_model=List[CustomerSchema])
 def list_customers(
     skip: int = 0,
     limit: int = 100,

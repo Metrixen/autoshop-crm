@@ -9,7 +9,7 @@ from app.utils.auth import get_current_staff, get_manager, get_password_hash
 router = APIRouter(prefix="/api/staff", tags=["Staff"])
 
 
-@router.post("/", response_model=StaffSchema, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=StaffSchema, status_code=status.HTTP_201_CREATED)
 def create_staff(
     staff_data: StaffCreate,
     db: Session = Depends(get_db),
@@ -50,7 +50,7 @@ def create_staff(
     return staff
 
 
-@router.get("/", response_model=List[StaffSchema])
+@router.get("", response_model=List[StaffSchema])
 def list_staff(
     skip: int = 0,
     limit: int = 100,
