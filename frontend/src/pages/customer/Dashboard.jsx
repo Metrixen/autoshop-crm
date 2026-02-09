@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
-import { carAPI, workOrderAPI, appointmentAPI } from '../../services/api';
+import { carAPI, workOrderAPI, appointmentAPI, customerAPI } from '../../services/api';
 import { format } from 'date-fns';
 
 const CustomerDashboard = () => {
@@ -11,7 +11,18 @@ const CustomerDashboard = () => {
   const [cars, setCars] = useState([]);
   const [workOrders, setWorkOrders] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [customer, setCustomer] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showAppointmentForm, setShowAppointmentForm] = useState(false);
+  const [appointmentForm, setAppointmentForm] = useState({
+    carId: '',
+    unregisteredCarDetails: '',
+    issueDescription: '',
+    preferredDate: '',
+    preferredTime: '',
+  });
+  const [appointmentError, setAppointmentError] = useState('');
+  const [appointmentSubmitting, setAppointmentSubmitting] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -19,15 +30,17 @@ const CustomerDashboard = () => {
 
   const loadData = async () => {
     try {
-      const [carsRes, workOrdersRes, appointmentsRes] = await Promise.all([
+      const [carsRes, workOrdersRes, appointmentsRes, customerRes] = await Promise.all([
         carAPI.getMyCars(),
         workOrderAPI.list({ limit: 5 }),
-        appointmentAPI.list({ limit: 5 })
+        appointmentAPI.list({ limit: 5 }),
+        customerAPI.getMe()
       ]);
       
       setCars(carsRes.data);
       setWorkOrders(workOrdersRes.data);
       setAppointments(appointmentsRes.data);
+      setCustomer(customerRes.data);
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {
@@ -50,6 +63,57 @@ const CustomerDashboard = () => {
         {t(`status.${status}`)}
       </span>
     );
+  };
+
+  const handleAppointmentChange = (field, value) => {
+    setAppointmentForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const resetAppointmentForm = () => {
+    setAppointmentForm({
+      carId: '',
+      unregisteredCarDetails: '',
+      issueDescription: '',
+      preferredDate: '',
+      preferredTime: '',
+    });
+  };
+
+  const handleCreateAppointment = async (event) => {
+    event.preventDefault();
+    if (!customer) {
+      setAppointmentError(t('error'));
+      return;
+    }
+
+    setAppointmentError('');
+    setAppointmentSubmitting(true);
+
+    const isNewCar = appointmentForm.carId === 'new';
+    const hasCarId = appointmentForm.carId && !isNewCar;
+
+    const payload = {
+      shop_id: customer.shop_id,
+      customer_id: customer.id,
+      car_id: hasCarId ? Number(appointmentForm.carId) : null,
+      unregistered_car_details: isNewCar
+        ? appointmentForm.unregisteredCarDetails || null
+        : null,
+      issue_description: appointmentForm.issueDescription,
+      preferred_date: new Date(appointmentForm.preferredDate).toISOString(),
+      preferred_time: appointmentForm.preferredTime || null,
+    };
+
+    try {
+      await appointmentAPI.create(payload);
+      await loadData();
+      resetAppointmentForm();
+      setShowAppointmentForm(false);
+    } catch (error) {
+      setAppointmentError(error.response?.data?.detail || t('error'));
+    } finally {
+      setAppointmentSubmitting(false);
+    }
   };
 
   if (loading) {
@@ -155,7 +219,10 @@ const CustomerDashboard = () => {
             <h3 className="text-xl font-semibold text-gray-900">
               {t('myAppointments')}
             </h3>
-            <button className="btn btn-primary">
+            <button
+              className="btn btn-primary"
+              onClick={() => setShowAppointmentForm(true)}
+            >
               {t('bookAppointment')}
             </button>
           </div>
@@ -187,6 +254,119 @@ const CustomerDashboard = () => {
           </div>
         </div>
       </main>
+
+      {showAppointmentForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
+            <h4 className="text-lg font-semibold mb-4">{t('bookAppointment')}</h4>
+            <form onSubmit={handleCreateAppointment} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('cars')}
+                </label>
+                <select
+                  className="input"
+                  value={appointmentForm.carId}
+                  onChange={(event) => handleAppointmentChange('carId', event.target.value)}
+                  required
+                >
+                  <option value="">{t('selectCar')}</option>
+                  {cars.map((car) => (
+                    <option key={car.id} value={car.id}>
+                      {car.make} {car.model} ({car.license_plate})
+                    </option>
+                  ))}
+                  <option value="new">{t('newCar')}</option>
+                </select>
+              </div>
+
+              {appointmentForm.carId === 'new' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t('carDetails')}
+                  </label>
+                  <input
+                    type="text"
+                    className="input"
+                    value={appointmentForm.unregisteredCarDetails}
+                    onChange={(event) =>
+                      handleAppointmentChange('unregisteredCarDetails', event.target.value)
+                    }
+                    placeholder={t('carDetailsPlaceholder')}
+                    required
+                  />
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('reportedIssues')}
+                </label>
+                <textarea
+                  className="input min-h-[96px]"
+                  value={appointmentForm.issueDescription}
+                  onChange={(event) =>
+                    handleAppointmentChange('issueDescription', event.target.value)
+                  }
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('preferredDate')}
+                </label>
+                <input
+                  type="datetime-local"
+                  className="input"
+                  value={appointmentForm.preferredDate}
+                  onChange={(event) =>
+                    handleAppointmentChange('preferredDate', event.target.value)
+                  }
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('preferredTime')}
+                </label>
+                <input
+                  type="text"
+                  className="input"
+                  value={appointmentForm.preferredTime}
+                  onChange={(event) =>
+                    handleAppointmentChange('preferredTime', event.target.value)
+                  }
+                  placeholder="09:00"
+                />
+              </div>
+
+              {appointmentError && (
+                <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm">
+                  {appointmentError}
+                </div>
+              )}
+
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => {
+                    setShowAppointmentForm(false);
+                    setAppointmentError('');
+                  }}
+                >
+                  {t('cancel')}
+                </button>
+                <button type="submit" className="btn btn-primary" disabled={appointmentSubmitting}>
+                  {appointmentSubmitting ? t('loading') : t('submit')}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
