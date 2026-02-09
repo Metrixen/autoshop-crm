@@ -44,6 +44,12 @@ const resources = {
       "serviceHistory": "Service History",
       "bookAppointment": "Book Appointment",
       "changePassword": "Change Password",
+      "selectCar": "Select a car",
+      "newCar": "New / unregistered car",
+      "carDetails": "Car details",
+      "carDetailsPlaceholder": "Make, model, year, plate",
+      "preferredDate": "Preferred date",
+      "preferredTime": "Preferred time",
       
       // Work Orders
       "createWorkOrder": "Create Work Order",
@@ -120,6 +126,12 @@ const resources = {
       "serviceHistory": "История на обслужване",
       "bookAppointment": "Запази час",
       "changePassword": "Смяна на парола",
+      "selectCar": "Избери автомобил",
+      "newCar": "Нов / нерегистриран автомобил",
+      "carDetails": "Данни за автомобила",
+      "carDetailsPlaceholder": "Марка, модел, година, номер",
+      "preferredDate": "Предпочитана дата",
+      "preferredTime": "Предпочитан час",
       
       // Work Orders
       "createWorkOrder": "Създай работна поръчка",

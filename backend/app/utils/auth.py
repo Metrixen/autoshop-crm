@@ -77,14 +77,12 @@ def get_current_user(
     """Get current authenticated user from token"""
     token = credentials.credentials
     token_data = decode_token(token)
-    
-    # Try to get staff user first
-    user = db.query(Staff).filter(Staff.id == token_data.user_id).first()
-    if user:
-        return user
-    
-    # Try customer
-    user = db.query(Customer).filter(Customer.id == token_data.user_id).first()
+
+    if token_data.role == UserRole.CUSTOMER:
+        user = db.query(Customer).filter(Customer.id == token_data.user_id).first()
+    else:
+        user = db.query(Staff).filter(Staff.id == token_data.user_id).first()
+
     if user:
         return user
     

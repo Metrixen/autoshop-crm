@@ -34,6 +34,34 @@ const StaffDashboard = () => {
     }
   };
 
+  const handleConfirm = async (appointmentId, preferredDate) => {
+    try {
+      await appointmentAPI.update(appointmentId, {
+        status: 'confirmed',
+        confirmed_date: preferredDate,
+      });
+      await loadData();
+    } catch (error) {
+      console.error('Error confirming appointment:', error);
+    }
+  };
+
+  const handleReject = async (appointmentId) => {
+    const reason = window.prompt('Reason for rejection?');
+    if (reason === null) {
+      return;
+    }
+    try {
+      await appointmentAPI.update(appointmentId, {
+        status: 'rejected',
+        rejection_reason: reason || null,
+      });
+      await loadData();
+    } catch (error) {
+      console.error('Error rejecting appointment:', error);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -128,10 +156,16 @@ const StaffDashboard = () => {
                         </p>
                       </div>
                       <div className="flex gap-2">
-                        <button className="btn btn-primary text-sm">
+                        <button
+                          className="btn btn-primary text-sm"
+                          onClick={() => handleConfirm(apt.id, apt.preferred_date)}
+                        >
                           Confirm
                         </button>
-                        <button className="btn btn-danger text-sm">
+                        <button
+                          className="btn btn-danger text-sm"
+                          onClick={() => handleReject(apt.id)}
+                        >
                           Reject
                         </button>
                       </div>
