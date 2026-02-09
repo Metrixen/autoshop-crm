@@ -51,7 +51,7 @@ def create_refresh_token(data: dict) -> str:
 def decode_token(token: str) -> TokenData:
     """Decode and validate JWT token"""
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM], options={"verify_sub": False})
         user_id: int = payload.get("sub")
         role: str = payload.get("role")
         shop_id: int = payload.get("shop_id")
