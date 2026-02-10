@@ -17,6 +17,22 @@ const VehicleDetail = () => {
   const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [vehicleRes, workOrdersRes] = await Promise.all([
+          carAPI.get(id),
+          workOrderAPI.list({ car_id: id })
+        ]);
+        
+        setVehicle(vehicleRes.data);
+        setWorkOrders(workOrdersRes.data);
+      } catch (error) {
+        console.error('Error loading vehicle data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
     loadData();
   }, [id]);
 
@@ -45,7 +61,7 @@ const VehicleDetail = () => {
     }
     
     if (mileageValue <= vehicle.current_mileage) {
-      alert(`New mileage must be greater than current mileage (${vehicle.current_mileage} km)`);
+      alert(`New mileage must be greater than current mileage (${vehicle.current_mileage.toLocaleString()} km)`);
       return;
     }
     

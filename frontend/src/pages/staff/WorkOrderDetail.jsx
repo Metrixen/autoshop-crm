@@ -21,6 +21,23 @@ const WorkOrderDetail = () => {
   });
 
   useEffect(() => {
+    const loadWorkOrder = async () => {
+      try {
+        const response = await workOrderAPI.get(id);
+        setWorkOrder(response.data);
+        setFormData({
+          status: response.data.status,
+          diagnostic_notes: response.data.diagnostic_notes || '',
+          mechanic_notes: response.data.mechanic_notes || '',
+          mileage_at_intake: response.data.mileage_at_intake || ''
+        });
+      } catch (error) {
+        console.error('Error loading work order:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
     loadWorkOrder();
   }, [id]);
 

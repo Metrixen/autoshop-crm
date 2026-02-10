@@ -15,6 +15,22 @@ const SMSLogs = () => {
   });
 
   useEffect(() => {
+    const loadSMSLogs = async () => {
+      try {
+        const params = {};
+        if (filters.message_type) params.message_type = filters.message_type;
+        if (filters.status) params.status = filters.status;
+        if (filters.recipient_phone) params.recipient_phone = filters.recipient_phone;
+        
+        const response = await smsLogAPI.list(params);
+        setSmsLogs(response.data);
+      } catch (error) {
+        console.error('Error loading SMS logs:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
     loadSMSLogs();
   }, []);
 
@@ -50,7 +66,8 @@ const SMSLogs = () => {
       recipient_phone: ''
     });
     setLoading(true);
-    setTimeout(() => loadSMSLogs(), 100);
+    // Reload after clearing filters
+    loadSMSLogs();
   };
 
   const getStatusBadge = (status) => {
