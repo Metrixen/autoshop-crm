@@ -113,7 +113,7 @@ const VehicleDetail = () => {
               Current Mileage
             </h3>
             <p className="text-3xl font-bold text-primary-600">
-              {vehicle.current_mileage.toLocaleString()}
+              {(vehicle.current_mileage || 0).toLocaleString()}
             </p>
             <p className="text-xs text-gray-500 mt-1">km</p>
           </div>
@@ -122,7 +122,7 @@ const VehicleDetail = () => {
               Service Interval
             </h3>
             <p className="text-3xl font-bold text-blue-600">
-              {vehicle.service_interval_km.toLocaleString()}
+              {(vehicle.service_interval_km || 10000).toLocaleString()}
             </p>
             <p className="text-xs text-gray-500 mt-1">km</p>
           </div>

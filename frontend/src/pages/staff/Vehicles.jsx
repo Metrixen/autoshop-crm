@@ -173,12 +173,12 @@ const Vehicles = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="text-sm text-gray-900">
-                          {vehicle.current_mileage.toLocaleString()} km
+                          {(vehicle.current_mileage || 0).toLocaleString()} km
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="text-sm text-gray-500">
-                          Every {vehicle.service_interval_km.toLocaleString()} km
+                          Every {(vehicle.service_interval_km || 10000).toLocaleString()} km
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

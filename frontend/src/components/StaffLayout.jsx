@@ -15,7 +15,6 @@ const StaffLayout = ({ children }) => {
     { name: 'Customers', href: '/customers', icon: '👥' },
     { name: 'Work Orders', href: '/work-orders', icon: '🔧' },
     { name: 'Invoices', href: '/invoices', icon: '💰' },
-    { name: 'Appointments', href: '/appointments', icon: '📅' },
   ];
 
   // Add Staff management for managers

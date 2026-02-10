@@ -131,14 +131,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/appointments"
-            element={
-              <ProtectedRoute requireStaff>
-                <StaffDashboard />
-              </ProtectedRoute>
-            }
-          />
 
           {/* Default Route */}
           <Route path="/" element={<Navigate to="/login" replace />} />

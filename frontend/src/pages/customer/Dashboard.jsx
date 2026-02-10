@@ -244,7 +244,7 @@ const CustomerDashboard = () => {
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-500">Mileage:</span>
-                        <span className="font-medium text-gray-900">{car.current_mileage.toLocaleString()} km</span>
+                        <span className="font-medium text-gray-900">{(car.current_mileage || 0).toLocaleString()} km</span>
                       </div>
                       {lastService && (
                         <div className="pt-2 mt-2 border-t border-gray-200">
@@ -456,13 +456,13 @@ const CustomerDashboard = () => {
               <div className="card">
                 <h3 className="text-sm font-medium text-gray-500 mb-2">Current Mileage</h3>
                 <p className="text-2xl font-bold text-primary-600">
-                  {selectedVehicle.current_mileage.toLocaleString()} km
+                  {(selectedVehicle.current_mileage || 0).toLocaleString()} km
                 </p>
               </div>
               <div className="card">
                 <h3 className="text-sm font-medium text-gray-500 mb-2">Service Interval</h3>
                 <p className="text-2xl font-bold text-blue-600">
-                  {selectedVehicle.service_interval_km.toLocaleString()} km
+                  {(selectedVehicle.service_interval_km || 10000).toLocaleString()} km
                 </p>
               </div>
             </div>
