@@ -4,6 +4,11 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/auth/Login';
 import CustomerDashboard from './pages/customer/Dashboard';
 import StaffDashboard from './pages/staff/Dashboard';
+import Vehicles from './pages/staff/Vehicles';
+import VehicleDetail from './pages/staff/VehicleDetail';
+import Customers from './pages/staff/Customers';
+import WorkOrders from './pages/staff/WorkOrders';
+import Invoices from './pages/staff/Invoices';
 import './i18n/i18n';
 
 // Protected Route Component
@@ -80,6 +85,54 @@ function App() {
           {/* Staff Routes */}
           <Route
             path="/dashboard"
+            element={
+              <ProtectedRoute requireStaff>
+                <StaffDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/vehicles"
+            element={
+              <ProtectedRoute requireStaff>
+                <Vehicles />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/vehicles/:id"
+            element={
+              <ProtectedRoute requireStaff>
+                <VehicleDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customers"
+            element={
+              <ProtectedRoute requireStaff>
+                <Customers />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/work-orders"
+            element={
+              <ProtectedRoute requireStaff>
+                <WorkOrders />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/invoices"
+            element={
+              <ProtectedRoute requireStaff>
+                <Invoices />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/appointments"
             element={
               <ProtectedRoute requireStaff>
                 <StaffDashboard />

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '../../context/AuthContext';
+import { format } from 'date-fns';
+import StaffLayout from '../../components/StaffLayout';
 import { reportsAPI, workOrderAPI, appointmentAPI } from '../../services/api';
 
 const StaffDashboard = () => {
   const { t } = useTranslation();
-  const { logout } = useAuth();
   
   const [stats, setStats] = useState(null);
   const [workOrders, setWorkOrders] = useState([]);
@@ -71,25 +71,18 @@ const StaffDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-900">
-              AutoShop CRM - Staff Dashboard
-            </h1>
-            <button onClick={logout} className="btn btn-secondary">
-              {t('logout')}
-            </button>
-          </div>
+    <StaffLayout>
+      <div className="space-y-6">
+        {/* Header */}
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+          <p className="mt-2 text-gray-600">
+            Welcome back! Here's what's happening today.
+          </p>
         </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Grid */}
         {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="card">
               <h3 className="text-sm font-medium text-gray-500 mb-2">
                 Total Customers
@@ -113,8 +106,9 @@ const StaffDashboard = () => {
                 Revenue Today
               </h3>
               <p className="text-3xl font-bold text-green-600">
-                {stats.revenue_today.toFixed(2)} лв
+                {stats.revenue_today.toFixed(2)}
               </p>
+              <p className="text-xs text-gray-500 mt-1">лв</p>
             </div>
             
             <div className="card">
@@ -129,7 +123,7 @@ const StaffDashboard = () => {
         )}
 
         {/* Pending Appointments */}
-        <div className="mb-8">
+        <div>
           <h3 className="text-xl font-semibold text-gray-900 mb-4">
             Pending Appointments
           </h3>
@@ -152,7 +146,7 @@ const StaffDashboard = () => {
                           {apt.issue_description}
                         </p>
                         <p className="text-xs text-gray-500 mt-1">
-                          Preferred: {new Date(apt.preferred_date).toLocaleString('bg-BG')}
+                          Preferred: {format(new Date(apt.preferred_date), 'dd.MM.yyyy HH:mm')}
                         </p>
                       </div>
                       <div className="flex gap-2">
@@ -178,7 +172,7 @@ const StaffDashboard = () => {
         </div>
 
         {/* Recent Work Orders */}
-        <div className="mb-8">
+        <div>
           <h3 className="text-xl font-semibold text-gray-900 mb-4">
             Recent Work Orders
           </h3>
@@ -233,8 +227,8 @@ const StaffDashboard = () => {
             </table>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </StaffLayout>
   );
 };
 
