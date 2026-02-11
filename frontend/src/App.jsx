@@ -8,7 +8,9 @@ import Vehicles from './pages/staff/Vehicles';
 import VehicleDetail from './pages/staff/VehicleDetail';
 import Customers from './pages/staff/Customers';
 import WorkOrders from './pages/staff/WorkOrders';
+import WorkOrderDetail from './pages/staff/WorkOrderDetail';
 import Invoices from './pages/staff/Invoices';
+import SMSLogs from './pages/staff/SMSLogs';
 import './i18n/i18n';
 
 // Protected Route Component
@@ -124,10 +126,26 @@ function App() {
             }
           />
           <Route
+            path="/work-orders/:id"
+            element={
+              <ProtectedRoute requireStaff>
+                <WorkOrderDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/invoices"
             element={
               <ProtectedRoute requireStaff>
                 <Invoices />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/sms-logs"
+            element={
+              <ProtectedRoute requireStaff>
+                <SMSLogs />
               </ProtectedRoute>
             }
           />

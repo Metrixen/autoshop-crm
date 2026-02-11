@@ -3,8 +3,10 @@ from sqlalchemy.orm import Session
 from typing import List
 from datetime import datetime
 from app.database import get_db
-from app.models import Car, Customer, Staff, CarOwnershipHistory
-from app.schemas import Car as CarSchema, CarCreate, CarUpdate, CarOwnershipTransfer, CarWithOwner
+from app.models import Car, Customer, Staff, CarOwnershipHistory, WorkOrder
+from app.schemas import (Car as CarSchema, CarCreate, CarUpdate, CarOwnershipTransfer, 
+                         CarWithOwner, CarServiceHistory, WorkOrder as WorkOrderSchema,
+                         CarOwnershipHistorySchema)
 from app.utils.auth import get_current_staff, get_receptionist_or_higher, get_current_customer
 
 router = APIRouter(prefix="/api/cars", tags=["Cars"])
@@ -190,7 +192,6 @@ def delete_car(
         raise HTTPException(status_code=404, detail="Car not found")
     
     # Check if car has work orders
-    from app.models import WorkOrder
     has_work_orders = db.query(WorkOrder).filter(WorkOrder.car_id == car.id).first()
     
     if has_work_orders:
@@ -202,3 +203,36 @@ def delete_car(
     db.delete(car)
     db.commit()
     return None
+
+
+@router.get("/{car_id}/service-history", response_model=CarServiceHistory)
+def get_car_service_history(
+    car_id: int,
+    db: Session = Depends(get_db),
+    current_staff: Staff = Depends(get_current_staff)
+):
+    """Get complete service history for a car including work orders and ownership transfers"""
+    
+    car = db.query(Car).filter(
+        Car.id == car_id,
+        Car.shop_id == current_staff.shop_id
+    ).first()
+    
+    if not car:
+        raise HTTPException(status_code=404, detail="Car not found")
+    
+    # Get all work orders for this car
+    work_orders = db.query(WorkOrder).filter(
+        WorkOrder.car_id == car_id
+    ).order_by(WorkOrder.created_at.desc()).all()
+    
+    # Get ownership history
+    ownership_history = db.query(CarOwnershipHistory).filter(
+        CarOwnershipHistory.car_id == car_id
+    ).order_by(CarOwnershipHistory.transfer_date.desc()).all()
+    
+    return {
+        "car": car,
+        "work_orders": work_orders,
+        "ownership_history": ownership_history
+    }

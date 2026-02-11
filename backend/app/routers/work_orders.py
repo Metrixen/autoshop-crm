@@ -63,6 +63,7 @@ def list_work_orders(
     limit: int = 100,
     status_filter: WorkOrderStatus = None,
     assigned_mechanic_id: int = None,
+    car_id: int = None,
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
@@ -89,6 +90,9 @@ def list_work_orders(
     
     if assigned_mechanic_id:
         query = query.filter(WorkOrder.assigned_mechanic_id == assigned_mechanic_id)
+    
+    if car_id:
+        query = query.filter(WorkOrder.car_id == car_id)
     
     work_orders = query.order_by(WorkOrder.created_at.desc()).offset(skip).limit(limit).all()
     return work_orders

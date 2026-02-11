@@ -406,3 +406,40 @@ class ServiceReminder(BaseModel):
     
     class Config:
         from_attributes = True
+
+
+# ===== Car Service History Schemas =====
+
+class CarOwnershipHistorySchema(BaseModel):
+    id: int
+    car_id: int
+    previous_owner_id: Optional[int]
+    new_owner_id: int
+    transfer_date: datetime
+    notes: Optional[str]
+    
+    class Config:
+        from_attributes = True
+
+
+class CarServiceHistory(BaseModel):
+    car: Car
+    work_orders: List[WorkOrder] = []
+    ownership_history: List[CarOwnershipHistorySchema] = []
+
+
+# ===== SMS Log Schemas =====
+
+class SMSLog(BaseModel):
+    id: int
+    shop_id: int
+    recipient_phone: str
+    message_type: str
+    message_body: str
+    twilio_sid: Optional[str]
+    status: Optional[str]
+    error_message: Optional[str]
+    sent_at: datetime
+    
+    class Config:
+        from_attributes = True

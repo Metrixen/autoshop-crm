@@ -66,6 +66,7 @@ export const carAPI = {
   list: (params) => api.get('/api/cars', { params }),
   get: (id) => api.get(`/api/cars/${id}`),
   getMyCars: () => api.get('/api/cars/my-cars'),
+  getServiceHistory: (id) => api.get(`/api/cars/${id}/service-history`),
   create: (data) => api.post('/api/cars', data),
   update: (id, data) => api.put(`/api/cars/${id}`, data),
   transferOwnership: (id, data) => api.post(`/api/cars/${id}/transfer-ownership`, data),
@@ -142,6 +143,11 @@ export const adminAPI = {
   deactivateShop: (id) => api.put(`/api/admin/shops/${id}/deactivate`),
   getSMSUsage: (id, params) => api.get(`/api/admin/shops/${id}/sms-usage`, { params }),
   impersonate: (id) => api.post(`/api/admin/impersonate/${id}`),
+};
+
+// SMS Log API
+export const smsLogAPI = {
+  list: (params) => api.get('/api/sms-logs', { params }),
 };
 
 export default api;

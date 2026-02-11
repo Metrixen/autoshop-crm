@@ -15,7 +15,8 @@ from app.routers import (
     shop,
     staff,
     admin,
-    reports
+    reports,
+    sms_logs
 )
 
 # Create FastAPI application
@@ -48,6 +49,7 @@ app.include_router(shop.router)
 app.include_router(staff.router)
 app.include_router(admin.router)
 app.include_router(reports.router)
+app.include_router(sms_logs.router)
 
 
 @app.on_event("startup")
